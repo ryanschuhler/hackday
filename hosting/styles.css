@@ -1,19 +1,29 @@
 body {
 	background: #0c0c10;
+	color: #FFF;
 	font-family: 'Source Code Pro', "Lucida Console", Monaco, monospace;
 	overflow: hidden;
+}
+
+button, input {
+	font-weight: 500;
+	font-size: 1.2em;
+	letter-spacing: 1.2px;
+	margin: 1em;
+	padding: 1em 3em;
+	text-transform: uppercase;
 }
 
 button {
 	background-color: #FFD400;
 	border: none;
-	color: white;
-	font-family: 'Source Code Pro';
-	font-size: 1.2em;
-	font-weight: 500;
-	letter-spacing: 1.2px;	
-	padding: 1em 3em;
-	text-transform: uppercase;
+	cursor: pointer;
+}
+
+form {
+	align-items: center;
+	display: flex;
+	flex-direction: column;
 }
 
 h1 {
@@ -24,7 +34,7 @@ h1 {
 }
 
 h2 {
-	color: rgba(42, 43, 57, 0.9);	
+	color: rgba(42, 43, 57, 0.9);
 	font-size: 3.5em;
 	font-weight: 300;
 	margin: 0;
@@ -36,6 +46,14 @@ h3 {
 	font-weight: 500;
 }
 
+input {
+	color: #FFF !important;
+	background: rgba(0, 0, 0, .9) !important;
+	border: 2px solid #FFD23F;
+	display: block;
+	padding-right: 1em;
+}
+
 .container {
 	align-items: center;
 	display: flex;
@@ -45,11 +63,11 @@ h3 {
 }
 
 .giant {
-	color: #0c0c10;	
+	color: #0c0c10;
 	font-weight: 900;
 	font-size: 50vh;
 	line-height: 80%;
-	position: absolute;	
+	position: absolute;
 	text-shadow: 0 20px 56px rgba(42, 43, 57, .7);
 	z-index: -1;
 }

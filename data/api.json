@@ -1,6 +1,12 @@
 [
 	{
 		"path": "/hackers/*",
-		"data": true
+		"data": true,
+		"method": ["GET", "POST"],
+		"parameters": {
+			"email": {
+				"type": "string"
+			}
+		}
 	}
 ]

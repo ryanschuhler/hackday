@@ -4,15 +4,54 @@
 	<meta charset="UTF-8">
 	<title>Liferay Hackday 2017</title>
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Code+Pro:300,500,700">
-	<link rel="stylesheet" href="https://plhnk.github.io/hackday-paul/styles.css">
+	<link rel="stylesheet" href="./styles.css">
 </head>
 <body>
 	<div class="container">
 		<div class="giant">Hackday 2017</div>
-		<div class="info">
+		<div id="info" class="info">
 			<h3>Coming soon&#8211;stay tuned for more details.</h3>
-			<button>Keep Me Posted</button>
+			<form>
+				<input name="email" type="text" placeholder="Enter your email">
+				<button name="submitBtn">Keep Me Posted</button>
+			</form>
+			<div>
+				<span id="hackerCount">0</span> hackers have signed up!
+			</div>
 		</div>
 	</div>
+
+	<script src="http://cdn.wedeploy.com/api/latest/wedeploy.js"></script>
+	<script>
+		var data = 	WeDeploy.data('http://data.liferayhackday.wedeploy.io');
+
+		var updateCount = function() {
+			data.get('hackers')
+			.then(function(hackers) {
+				document.getElementById("hackerCount").innerText= hackers.length;
+			});
+		};
+
+		updateCount();
+
+		var form = document.querySelector('form');
+
+		form.addEventListener('submit', function(e) {
+			e.preventDefault();
+
+
+			data.create('hackers', {
+				"email": form.email.value
+			})
+			.then(function(hackers) {
+				if (form.submitBtn) {
+					form.email.value = "Thanks";
+					form.removeChild(form.submitBtn);
+
+					updateCount();
+				}
+			});
+		});
+	</script>
 </body>
 </html>
