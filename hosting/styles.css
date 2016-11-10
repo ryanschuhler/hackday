@@ -1,8 +1,11 @@
+a, .hackday-icon {
+	color: #FFD23F;
+}
+
 body {
 	background: #0c0c10;
 	color: #FFF;
 	font-family: 'Source Code Pro', "Lucida Console", Monaco, monospace;
-	overflow: hidden;
 }
 
 button, input {
@@ -34,13 +37,6 @@ h1 {
 }
 
 h2 {
-	color: rgba(42, 43, 57, 0.9);
-	font-size: 3.5em;
-	font-weight: 300;
-	margin: 0;
-}
-
-h3 {
 	color: white;
 	font-size: 2.5em;
 	font-weight: 500;
@@ -54,12 +50,17 @@ input {
 	padding-right: 1em;
 }
 
-.container {
+#banner {
 	align-items: center;
 	display: flex;
 	height: 100vh;
 	justify-content: center;
 	text-align: center;
+}
+
+#footer {
+	justify-content: space-around;
+	display: flex;
 }
 
 .giant {
@@ -70,6 +71,30 @@ input {
 	position: absolute;
 	text-shadow: 0 20px 56px rgba(42, 43, 57, .7);
 	z-index: -1;
+}
+
+.max-full, .max-lg {
+	margin: 0 auto;
+}
+
+.max-full {
+	max-width: 1200px;
+}
+
+.max-lg {
+	max-width: 1080px;
+}
+
+.powered-by {
+	display: flex;
+}
+
+.powered-by svg {
+	margin-left: .5em;
+}
+
+.text-center {
+	text-align: center;
 }
 
 /*colors
