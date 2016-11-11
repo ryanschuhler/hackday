@@ -105,6 +105,12 @@
 
 		<div class="max-lg text-center"  id="signUp">
 			<h2>Hack with us!</h2>
+
+			<div id="console">
+				<div class="prompt">>_</div>
+				<div class="content" id="consoleContent">
+				</div>
+			</div>
 		</div>
 
 		<div id="footer">
@@ -116,17 +122,6 @@
 
 	<script src="http://cdn.wedeploy.com/api/latest/wedeploy.js"></script>
 	<script>
-		var data = 	WeDeploy.data('http://data.liferayhackday.wedeploy.io');
-
-		var updateCount = function() {
-			data.get('hackers')
-			.then(function(hackers) {
-				document.getElementById("hackerCount").innerText= hackers.length;
-			});
-		};
-
-		updateCount();
-
 		var consoleSignUp = document.getElementById("consoleSignUp");
 		var giantText = document.getElementById("giantText");
 
@@ -140,20 +135,100 @@
 			var formPosY = consoleSignUp.offsetTop + 30;
 
 			var distance = Math.sqrt(
-				Math.pow(posX - formPosX, 2) +
-				Math.pow(posY - formPosY, 2)
+					Math.pow(posX - formPosX, 2) +
+					Math.pow(posY - formPosY, 2)
 			);
 
 			giantText.style.opacity = 1 / (distance/100);
 		};
 
 		document.onmousemove = findMouse;
+		document.onscroll = findMouse;
+
+		var consoleContent = document.getElementById("consoleContent");
+
+		var characterDelay = 50;
+		var promptDelay = 2000;
+
+		var printText = function(text, className) {
+			var node = document.createElement("div");
+
+			node.className = className;
+
+			node = consoleContent.appendChild(node);
+
+			printChacter(node, text, 0)
+		};
+
+		var printChacter = function(node, text, count) {
+			node.scrollIntoView();
+
+			node.innerHTML += text[count];
+
+			if (text.length -1 > count) {
+				setTimeout(
+					function() {
+						printChacter(node, text, count + 1);
+					}, characterDelay
+				);
+			}
+		};
+
+		var userSubmit = function(text) {
+
+		};
+
+		var validate = function() {
+
+		};
+
+		setTimeout(function() {
+			printText("Enter your.email@liferay.com to begin", "command");
+		}, promptDelay);
+
+		setTimeout(function() {
+			printText("ryan.schuhler@liferay.com", "response success");
+		}, promptDelay * 2);
+		setTimeout(function() {
+			printText("Which office are you from?", "command");
+		}, promptDelay * 3);
+		setTimeout(function() {
+			printText("Diamond Bar (US) ", "response");
+		}, promptDelay * 4);
+		setTimeout(function() {
+			printText("Will you stay for pizza after 20:00?", "command");
+		}, promptDelay * 5);
+		setTimeout(function() {
+			printText("yes", "response");
+		}, promptDelay * 6);
+		setTimeout(function() {
+			printText("Hit 'enter' to submit!", "command");
+		}, promptDelay * 7);
+		setTimeout(function() {
+			printText("Thanks for registering! See you in LA on January 27.", "response");
+		}, promptDelay * 8);
+		setTimeout(function() {
+			printText("Share on loop?", "command");
+		}, promptDelay * 9);
+		setTimeout(function() {
+			printText("yes", "response");
+		}, promptDelay * 10);
+
+		var data = 	WeDeploy.data('http://data.liferayhackday.wedeploy.io');
+
+		var updateCount = function() {
+			data.get('hackers')
+			.then(function(hackers) {
+				document.getElementById("hackerCount").innerText= hackers.length;
+			});
+		};
+
+		updateCount();
 
 		var form = document.querySelector('form');
 
 		form.addEventListener('submit', function(e) {
 			e.preventDefault();
-
 
 			data.create('hackers', {
 				"email": form.email.value
