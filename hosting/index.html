@@ -9,14 +9,14 @@
 <body>
 	<div id="wrapper">
 		<div id="banner">
-			<div class="giant">Hackday 2017</div>
+			<div id="giantText">Hackday 2017</div>
 
 			<div>
 				<svg class="hackday-icon" width="113" height="108" viewBox="0 0 113 108" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:figma="http://www.figma.com/figma/ns"><title>Hackday icon</title><desc>Created using Figma</desc><g style="mix-blend-mode:normal" figma:type="frame"><use xlink:href="#a" transform="translate(28.7 28)" fill="currentColor" style="mix-blend-mode:normal" figma:type="vector-operation"/><use xlink:href="#b" transform="translate(.7 54)" fill="currentColor" style="mix-blend-mode:normal" figma:type="vector"/><use xlink:href="#c" transform="translate(96.7 54)" fill="currentColor" style="mix-blend-mode:normal" figma:type="vector"/><use xlink:href="#c" transform="rotate(-45 73.547 -87.764)" fill="currentColor" style="mix-blend-mode:normal" figma:type="vector"/><use xlink:href="#c" transform="rotate(-90 35.35 -19.35)" fill="currentColor" style="mix-blend-mode:normal" figma:type="vector"/><use xlink:href="#c" transform="rotate(-112.5 26.418 -3.325)" fill="currentColor" style="mix-blend-mode:normal" figma:type="vector"/><use xlink:href="#c" transform="rotate(-135 19.533 8.973)" fill="currentColor" style="mix-blend-mode:normal" figma:type="vector"/><use xlink:href="#c" transform="rotate(-157.5 13.73 19.38)" fill="currentColor" style="mix-blend-mode:normal" figma:type="vector"/><use xlink:href="#c" transform="rotate(-67.5 48.78 -43.39)" fill="currentColor" style="mix-blend-mode:normal" figma:type="vector"/><use xlink:href="#c" transform="rotate(-22.5 144.08 -214.1)" fill="currentColor" style="mix-blend-mode:normal" figma:type="vector"/></g><defs><path id="a" fill-rule="evenodd" d="M28.683.164c-.375-.22-.99-.22-1.364 0L.682 15.684c-.376.22-.683.756-.683 1.193v31.04c0 .438.307.975.683 1.194L12.01 56v8c0 .587.353.944.99 1h1v5.5c.02.653.374 1.01.808 1.01h1.198L16 79c.015.653.37 1.01 1 1h22c.645-.054 1-.41 1-1l-.01-7.553 1.206-.04c.433 0 .788-.357.804-.907V65h1c.63-.165.984-.523 1-1v-8l11.317-6.89c.376-.218.683-.755.683-1.192v-31.04c0-.438-.307-.975-.683-1.194L28.683.164zM36 74.927c0 .59-.387 1.073-.86 1.073H20.86c-.474 0-.862-.483-.862-1.073v-1.853c0-.59.388-1.074.862-1.074H35.14c.473 0 .86.483.86 1.074v1.853zM37.2 68c.44 0 .8-.47.8-1.04v-1.92c0-.572-.36-1.04-1-1.04H19c-.64 0-1 .468-1 1.04v1.92c0 .57.36 1.04.8 1.04h18.4zM16 38.62c0-.45.258-.555.572-.238l3.884 3.917c.314.316.825.312 1.134-.01l5.792-6.048c.31-.323.815-.323 1.124 0l5.78 6.036c.31.323.822.33 1.14.014l3.997-3.966c.318-.315.577-.206.577.24v20.62c0 .448-.366.814-.812.814H16.81c-.445 0-.81-.366-.81-.814V38.62zm35.412 7.927c.368-.22.588-.46.588-.953V18.826c0-.438-.3-.976-.67-1.194L28.67 4.164c-.37-.22-.97-.22-1.34 0L4.67 17.632c-.37.218-.67.756-.67 1.194v26.527c0 .74.383.975.75 1.194l7.27 4.49V28.692c0-.437.244-.54.543-.23l8.21 8.306c.3.31.786.305 1.08-.01l5.558-5.96c.296-.317.777-.317 1.072 0l5.566 5.97c.295.316.783.322 1.086.014l8.326-8.278c.302-.308.55-.2.55.236v22.294l7.402-4.49z"/><path id="b" d="M0 .892C0 .402.35 0 .78 0h14.44c.43 0 .78.402.78.892v2.216c0 .49-.35.892-.78.892H.78C.35 4 0 3.6 0 3.108V.892z"/><path id="c" fill-rule="evenodd" d="M15.22 0H.78C.35 0 0 .402 0 .892v2.216C0 3.598.35 4 .78 4h14.44c.43 0 .78-.4.78-.892V.892c0-.49-.35-.892-.78-.892z"/></defs></svg>
 				<h2>January 27 // Diamond Bar</h2>
 
 				<form>
-					<input name="email" type="text" placeholder="Enter your email">
+					<input id="consoleSignUp" name="email" type="text" placeholder="Enter your email">
 					<button name="submitBtn">Keep Me Posted</button>
 				</form>
 				<div>
@@ -126,6 +126,28 @@
 		};
 
 		updateCount();
+
+		var consoleSignUp = document.getElementById("consoleSignUp");
+		var giantText = document.getElementById("giantText");
+
+		var findMouse = function(e) {
+			var e = window.event;
+
+			var posX = e.clientX + window.scrollX;
+			var posY = e.clientY + window.scrollY;
+
+			var formPosX = consoleSignUp.offsetLeft + 60;
+			var formPosY = consoleSignUp.offsetTop + 30;
+
+			var distance = Math.sqrt(
+				Math.pow(posX - formPosX, 2) +
+				Math.pow(posY - formPosY, 2)
+			);
+
+			giantText.style.opacity = 1 / (distance/100);
+		};
+
+		document.onmousemove = findMouse;
 
 		var form = document.querySelector('form');
 

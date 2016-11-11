@@ -63,13 +63,14 @@ input {
 	display: flex;
 }
 
-.giant {
+#giantText {
 	color: #0c0c10;
 	font-weight: 900;
 	font-size: 50vh;
 	line-height: 80%;
 	position: absolute;
-	text-shadow: 0 20px 56px rgba(42, 43, 57, .7);
+	text-shadow: 0 0 50px #FFF;
+	opacity: 0;
 	z-index: -1;
 }
 
