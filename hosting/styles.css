@@ -68,10 +68,10 @@ input {
 	max-height: 10em;
 	min-height: 3em;
 	overflow: hidden;
-	padding: 1em 1em 1em 3em;
+	padding: 1em .2em 1em 2.5em;
 	position: relative;
 	text-align: left;
-	width: 20em;
+	width: 24em;
 }
 
 #console div {
@@ -87,7 +87,7 @@ input {
 }
 
 #console .prompt {
-	left: 1.5em;
+	left: 1em;
 	position: absolute;
 	top: 1em
 }
@@ -95,10 +95,15 @@ input {
 #console .content {
 	max-height: 10em;
 	overflow: auto;
+	padding-right: .8em;
 }
 
 #console .success {
 	color: #27AE60;
+}
+
+#details {
+	background: -webkit-linear-gradient(rgba(12, 12, 16, 1) 0%, rgba(12, 12, 16, 0) 20%, rgba(12, 12, 16, 0) 80%, rgba(12, 12, 16, 1)), url('./assets/images/welcome-to-hackday.jpg') center/cover no-repeat fixed;
 }
 
 #footer {
@@ -124,6 +129,40 @@ input {
 	font-size: 50vh;
 	line-height: 80%;
 	position: absolute;
+}
+
+.padding-horizontal-large {
+	padding: 0 2.5em;
+}
+
+.flex {
+	display: flex;
+}
+
+.flex-center {
+	align-items: center;
+}
+
+.flex-top {
+	align-items: flex-start;
+	padding-bottom: 2em;
+}
+
+.flex-top h2, .flex-top ol, .flex-top table {
+    -webkit-margin-before: 1rem;
+}
+
+.offset {
+	margin-left:4em;
+	width: 40%;
+}
+
+td {
+	padding: 0 .75em .75em 0;
+}
+
+ol {
+	line-height: 1.75;
 }
 
 #textShadow {
