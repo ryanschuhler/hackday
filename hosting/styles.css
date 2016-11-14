@@ -52,6 +52,8 @@ input {
 
 #banner {
 	align-items: center;
+	background: #2A2B39 url('./assets/images/bg-image.jpg') no-repeat fixed center;
+	background-size: cover;
 	display: flex;
 	height: 100vh;
 	justify-content: center;
@@ -59,19 +61,40 @@ input {
 }
 
 #footer {
-	justify-content: space-around;
+	color: rgba(255,255,255,0.6);
 	display: flex;
+	justify-content: space-around;
+	padding: 16vh 0 20vh;
 }
 
-#giantText {
+.footer-logo {
+	fill: rgba(255,255,255,0.6);
+	height: 1.5em;
+}
+
+.giantText {
+	-webkit-text-fill-color: transparent;
+	background: -webkit-linear-gradient(transparent, transparent), url('./assets/images/bg-image.jpg') no-repeat fixed center;
+	background-size: cover;
+	background: -o-linear-gradient(transparent, transparent);
+	-webkit-background-clip: text;
 	color: #0c0c10;
 	font-weight: 900;
 	font-size: 50vh;
 	line-height: 80%;
 	position: absolute;
-	text-shadow: 0 0 50px #FFF;
-	opacity: 0;
-	z-index: -1;
+}
+
+#textShadow {
+
+}
+
+#signup {
+	z-index: 1;
+}
+
+.section {
+	padding: 12vh 0 16vh;
 }
 
 .max-full, .max-lg {
