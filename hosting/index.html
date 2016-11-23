@@ -211,7 +211,7 @@
 		document.onscroll = findMouse;
 
 		var characterDelay = 50;
-		var data = 	WeDeploy.data('http://data.liferayhackday.wedeploy.io');
+		var data = 	WeDeploy.url('http://data.liferayhackday.wedeploy.io/hackers');
 		var promptDelay = 500;
 		var userInput = '';
 		var userAnswers = {};
@@ -392,9 +392,9 @@
 		};
 
 		var updateCount = function() {
-			data.get('hackers')
-			.then(function(hackers) {
-				document.getElementById("hackerCount").innerText= hackers.length;
+			data.get()
+			.then(function(result) {
+				document.getElementById("hackerCount").innerText= result.body().length;
 			});
 		};
 
