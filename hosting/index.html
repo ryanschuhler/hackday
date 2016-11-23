@@ -26,7 +26,7 @@
 						<div class="content" contenteditable="true" id="consoleContent"></div>
 					</div>
 
-					<div>
+					<div id="hackerCountWrapper">
 						<span id="hackerCount">0</span> hackers have signed up!
 					</div>
 				</div>
@@ -135,51 +135,69 @@
 
 	<script src="http://cdn.wedeploy.com/api/1.0.0-alpha.7/wedeploy.js"></script>
 	<script>
+//		Animate Scroll
+
 		function currentYPosition() {
-			// Firefox, Chrome, Opera, Safari
 			if (self.pageYOffset) return self.pageYOffset;
-			// Internet Explorer 6 - standards mode
-			if (document.documentElement && document.documentElement.scrollTop)
-				return document.documentElement.scrollTop;
-			// Internet Explorer 6, 7 and 8
 			if (document.body.scrollTop) return document.body.scrollTop;
 			return 0;
 		}
 
-		function elmYPosition(eID) {
-			var elm = document.getElementById(eID);
-			var y = elm.offsetTop;
-			var node = elm;
+		function elYPos(id) {
+			var el = document.getElementById(id);
+
+			var y = el.offsetTop;
+			var node = el;
+
 			while (node.offsetParent && node.offsetParent != document.body) {
 				node = node.offsetParent;
+
 				y += node.offsetTop;
-			} return y;
+			}
+
+			return y;
 		}
 
-		function smoothScroll(eID) {
+		function smoothScroll(id) {
 			var startY = currentYPosition();
-			var stopY = elmYPosition(eID);
+			var stopY = elYPos(id);
+
 			var distance = stopY > startY ? stopY - startY : startY - stopY;
+
 			if (distance < 100) {
 				scrollTo(0, stopY); return;
 			}
+
 			var speed = Math.round(distance / 100);
+
 			if (speed >= 20) speed = 20;
+
 			var step = Math.round(distance / 25);
+
 			var leapY = stopY > startY ? startY + step : startY - step;
+
 			var timer = 0;
+
 			if (stopY > startY) {
 				for ( var i=startY; i<stopY; i+=step ) {
 					setTimeout("window.scrollTo(0, "+leapY+")", timer * speed);
+
 					leapY += step; if (leapY > stopY) leapY = stopY; timer++;
-				} return;
+				}
+
+				return;
 			}
+
 			for ( var i=startY; i>stopY; i-=step ) {
 				setTimeout("window.scrollTo(0, "+leapY+")", timer * speed);
+
 				leapY -= step; if (leapY < stopY) leapY = stopY; timer++;
 			}
+
 			return false;
 		}
+
+//		Text Shadow Effect
 
 		var consoleContent = document.getElementById("consoleContent");
 		var textShadow = document.getElementById("textShadow");
@@ -210,6 +228,8 @@
 		document.onmousemove = findMouse;
 		document.onscroll = findMouse;
 
+//		Console Functionality
+
 		var characterDelay = 50;
 		var data = 	WeDeploy.url('http://data.liferayhackday.wedeploy.io/hackers');
 		var promptDelay = 500;
@@ -223,7 +243,7 @@
 		};
 
 		var listenForUserInput = function(question) {
-			if (question.userResponse) {
+			if (question.validate) {
 				consoleContent.addEventListener('keydown', processUserKeydown);
 			}
 			else {
@@ -275,17 +295,35 @@
 
 			userInput = '';
 
-			proceedQuestion(curQuestion, promptDelay);
+			if (curQuestion.validate()) {
+				proceedQuestion(curQuestion, promptDelay);
+			}
+			else {
+				printText(curQuestion.error, 'error');
+
+				listenForUserInput(curQuestion);
+			}
 		};
 
 		var submit = function() {
-//			data.create('hackers', userAnswers)
-//			.then(function(hackers) {
-//				proceedQuestion(curQuestion, promptDelay);
-//			});
-
-			proceedQuestion(curQuestion, promptDelay);
+			data.put('hackers', userAnswers)
+			.then(function(hackers) {
+				if (hackers.statusCode_ == 200) {
+					proceedQuestion(curQuestion, promptDelay);
+				}
+				else {
+					printText('Sorry, there was a problem with your submission, either refresh and try again or contact zeno.rocha@liferay.com if the problem persists.', 'error');
+				}
+			});
 		};
+
+		var officeOptions = [
+			'diamond bar',
+			'hungary',
+			'madrid',
+			'recife',
+			'other'
+		];
 
 		var processUserKeydown = function(event) {
 			if (event.key.length == 1) {
@@ -295,9 +333,9 @@
 				userInput = userInput.substring(0, userInput.length - 1);
 			}
 			else if (event.key == 'Enter') {
-				curQuestion.action();
-
 				unlistenForUserInput(curQuestion);
+
+				curQuestion.action();
 			}
 		};
 
@@ -319,36 +357,58 @@
 		var questions = {
 			email: {
 				action: save,
+				error: "Please use a valid Liferay email",
 				name: "email",
 				nextQuestion: "office",
 				text: "Enter your.email@liferay.com to begin",
-				userResponse: true
+				userResponse: true,
+				validate: function() {
+					if (userAnswers[curQuestion.name].indexOf('@liferay.com') != -1) {
+						return true;
+					}
+
+					return false;
+				}
 			},
 			office: {
 				action: save,
+				error: "Please use a valid Liferay office. The options are " + officeOptions.join(', '),
 				name: "office",
 				nextQuestion: "pizza",
 				text: "Which office are you from?",
-				userResponse: true
+				userResponse: true,
+				validate: function() {
+					if (officeOptions.indexOf(userAnswers[curQuestion.name].toLowerCase()) >= 0) {
+						return true;
+					}
+
+					return false;
+				}
 			},
 			pizza: {
 				action: save,
+				error: "Please answer yes or no",
 				name: "pizza",
 				nextQuestion: "submit",
-				text: "Will you stay for pizza after 20:00?",
-				userResponse: true
+				text: "Will you stay for pizza after 20:00? (y/n)",
+				userResponse: true,
+				validate: function() {
+					if (['yes', 'no', 'y', 'n'].indexOf(userAnswers[curQuestion.name].toLowerCase()) >= 0) {
+						return true;
+					}
+
+					return false;
+				}
 			},
 			submit: {
 				action: submit,
 				name: "submit",
 				nextQuestion: "thanks",
 				text: "Hit 'enter' to submit!",
-				userResponse: true
+				validate: true
 			},
 			thanks: {
-				action: function() {
-					proceedQuestion(curQuestion, promptDelay);
-				},
+				action: proceedQuestion,
 				name: "thanks",
 				nextQuestion: "share",
 				text: "Thanks for registering! See you in LA on January 27.",
@@ -356,6 +416,12 @@
 			},
 			share: {
 				action: function() {
+					save();
+
+					if (['yes', 'y'].indexOf(userAnswers[curQuestion.name].toLowerCase()) == -1) {
+						return;
+					}
+
 					setTimeout(
 						function() {
 							window.open('https://loop.liferay.com/web/guest/home/-/loop/topics/_Hackday','_blank');
@@ -364,8 +430,16 @@
 					);
 				},
 				name: "share",
-				text: "Share on loop?",
-				userResponse: true
+				text: "Share on loop? (y/n)",
+				error: "Please answer yes or no",
+				userResponse: true,
+				validate: function() {
+					if (['yes', 'no', 'y', 'n'].indexOf(userAnswers[curQuestion.name].toLowerCase()) >= 0) {
+						return true;
+					}
+
+					return false;
+				}
 			}
 		};
 
@@ -391,18 +465,25 @@
 			consoleContent.removeEventListener('keydown', processUserKeydown);
 		};
 
-		var updateCount = function() {
-			data.get()
-			.then(function(result) {
-				document.getElementById("hackerCount").innerText= result.body().length;
-			});
-		};
-
-		consoleContent.addEventListener('click', setCursorEnd);
+		document.getElementById("console").addEventListener('click', setCursorEnd);
 
 		var curQuestion = questions['email'];
 
 		runQuestion(questions.email);
+
+//		Registration Counter
+
+		var updateCount = function() {
+			data.get('hackers')
+			.then(function(hackers) {
+				if (hackers.statusCode_ == 200) {
+					document.getElementById("hackerCount").innerText= hackers.body_.length;
+				}
+				else {
+					document.getElementById("hackerCountWrapper").style.display = 'none';
+				}
+			});
+		};
 
 		updateCount();
 	</script>
