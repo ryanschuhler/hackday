@@ -22,7 +22,8 @@
 				<div class="sign-up-action">
 					<div id="console">
 						<div class="prompt">>_</div>
-						<div class="content" id="consoleContent"></div>
+
+						<div class="content" contenteditable="true" id="consoleContent"></div>
 					</div>
 
 					<div>
@@ -31,7 +32,7 @@
 				</div>
 			</div>
 
-			<a class="more-info" href="#info">
+			<a class="more-info" onclick="smoothScroll('info');">
 				more info<br>
 				<svg width="42" height="14" viewBox="0 0 42 14" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:figma="http://www.figma.com/figma/ns"><title>Polygon</title><desc>Created using Figma</desc><g id="Canvas" transform="translate(-10260 750)" figma:type="canvas"><g id="Polygon" style="mix-blend-mode:normal;" figma:type="vector"><use xlink:href="#path0_stroke" transform="translate(10261 -749)" fill="#FFFFFF" style="mix-blend-mode:normal;"/></g></g><defs><path id="path0_stroke" d="M 20 11.547L 19.5 12.413L 20 12.7017L 20.5 12.413L 20 11.547ZM 39.5 -0.866025L 19.5 10.681L 20.5 12.413L 40.5 0.866025L 39.5 -0.866025ZM 20.5 10.681L 0.5 -0.866025L -0.5 0.866025L 19.5 12.413L 20.5 10.681Z"/></defs></svg>
 			</a>
@@ -134,7 +135,53 @@
 
 	<script src="http://cdn.wedeploy.com/api/latest/wedeploy.js"></script>
 	<script>
-		var console = document.getElementById("console");
+		function currentYPosition() {
+			// Firefox, Chrome, Opera, Safari
+			if (self.pageYOffset) return self.pageYOffset;
+			// Internet Explorer 6 - standards mode
+			if (document.documentElement && document.documentElement.scrollTop)
+				return document.documentElement.scrollTop;
+			// Internet Explorer 6, 7 and 8
+			if (document.body.scrollTop) return document.body.scrollTop;
+			return 0;
+		}
+
+		function elmYPosition(eID) {
+			var elm = document.getElementById(eID);
+			var y = elm.offsetTop;
+			var node = elm;
+			while (node.offsetParent && node.offsetParent != document.body) {
+				node = node.offsetParent;
+				y += node.offsetTop;
+			} return y;
+		}
+
+		function smoothScroll(eID) {
+			var startY = currentYPosition();
+			var stopY = elmYPosition(eID);
+			var distance = stopY > startY ? stopY - startY : startY - stopY;
+			if (distance < 100) {
+				scrollTo(0, stopY); return;
+			}
+			var speed = Math.round(distance / 100);
+			if (speed >= 20) speed = 20;
+			var step = Math.round(distance / 25);
+			var leapY = stopY > startY ? startY + step : startY - step;
+			var timer = 0;
+			if (stopY > startY) {
+				for ( var i=startY; i<stopY; i+=step ) {
+					setTimeout("window.scrollTo(0, "+leapY+")", timer * speed);
+					leapY += step; if (leapY > stopY) leapY = stopY; timer++;
+				} return;
+			}
+			for ( var i=startY; i>stopY; i-=step ) {
+				setTimeout("window.scrollTo(0, "+leapY+")", timer * speed);
+				leapY -= step; if (leapY < stopY) leapY = stopY; timer++;
+			}
+			return false;
+		}
+
+		var consoleContent = document.getElementById("consoleContent");
 		var textShadow = document.getElementById("textShadow");
 
 		var findMouse = function(e) {
@@ -143,8 +190,8 @@
 			var posX = e.clientX + window.scrollX;
 			var posY = e.clientY + window.scrollY;
 
-			var formPosX = console.offsetLeft + 60;
-			var formPosY = console.offsetTop + 30;
+			var formPosX = consoleContent.offsetLeft + 60;
+			var formPosY = consoleContent.offsetTop + 30;
 
 			var distance = Math.sqrt(
 					Math.pow(posX - formPosX, 2) +
@@ -163,10 +210,53 @@
 		document.onmousemove = findMouse;
 		document.onscroll = findMouse;
 
-		var consoleContent = document.getElementById("consoleContent");
-
 		var characterDelay = 50;
-		var promptDelay = 2000;
+		var data = 	WeDeploy.data('http://data.liferayhackday.wedeploy.io');
+		var promptDelay = 500;
+		var userInput = '';
+		var userAnswers = {};
+
+		var hideCursor = function() {
+			var sel = window.getSelection();
+
+			sel.removeAllRanges();
+		};
+
+		var listenForUserInput = function(question) {
+			if (question.userResponse) {
+				consoleContent.addEventListener('keydown', processUserKeydown);
+			}
+			else {
+				var delay = curQuestion.text.length * characterDelay + 1000;
+
+				proceedQuestion(curQuestion, delay)
+			}
+		};
+
+		var printCharacter = function(node, text, count) {
+			consoleContent.scrollTop = consoleContent.scrollHeight;
+
+			node.innerHTML += text[count];
+
+			if (text.length -1 > count) {
+				setTimeout(
+					function() {
+						printCharacter(node, text, count + 1);
+					},
+					characterDelay
+				);
+			}
+
+			if (text.length -1 == count) {
+				var node = document.createElement("br");
+
+				consoleContent.appendChild(node);
+
+				consoleContent.scrollTop = consoleContent.scrollHeight;
+
+				setCursorEnd();
+			}
+		};
 
 		var printText = function(text, className) {
 			var node = document.createElement("div");
@@ -175,64 +265,131 @@
 
 			node = consoleContent.appendChild(node);
 
-			printChacter(node, text, 0)
+			hideCursor();
+			printCharacter(node, text, 0)
 		};
 
-		var printChacter = function(node, text, count) {
-			node.scrollIntoView();
 
-			node.innerHTML += text[count];
+		var save = function() {
+			userAnswers[curQuestion.name] = userInput;
 
-			if (text.length -1 > count) {
-				setTimeout(
-					function() {
-						printChacter(node, text, count + 1);
-					}, characterDelay
-				);
+			userInput = '';
+
+			proceedQuestion(curQuestion, promptDelay);
+		};
+
+		var submit = function() {
+//			data.create('hackers', userAnswers)
+//			.then(function(hackers) {
+//				proceedQuestion(curQuestion, promptDelay);
+//			});
+
+			proceedQuestion(curQuestion, promptDelay);
+		};
+
+		var processUserKeydown = function(event) {
+			if (event.key.length == 1) {
+				userInput += event.key;
+			}
+			else if (event.key == 'Backspace') {
+				userInput = userInput.substring(0, userInput.length - 1);
+			}
+			else if (event.key == 'Enter') {
+				curQuestion.action();
+
+				unlistenForUserInput(curQuestion);
 			}
 		};
 
-		var userSubmit = function(text) {
+		var proceedQuestion = function(question, delay) {
+			if (!question.nextQuestion) {
+				return;
+			}
 
+			curQuestion = questions[question.nextQuestion];
+
+			setTimeout(
+					function() {
+						runQuestion(curQuestion);
+					},
+					delay
+			);
 		};
 
-		var validate = function() {
-
+		var questions = {
+			email: {
+				action: save,
+				name: "email",
+				nextQuestion: "office",
+				text: "Enter your.email@liferay.com to begin",
+				userResponse: true
+			},
+			office: {
+				action: save,
+				name: "office",
+				nextQuestion: "pizza",
+				text: "Which office are you from?",
+				userResponse: true
+			},
+			pizza: {
+				action: save,
+				name: "pizza",
+				nextQuestion: "submit",
+				text: "Will you stay for pizza after 20:00?",
+				userResponse: true
+			},
+			submit: {
+				action: submit,
+				name: "submit",
+				nextQuestion: "thanks",
+				text: "Hit 'enter' to submit!",
+				userResponse: true
+			},
+			thanks: {
+				action: function() {
+					proceedQuestion(curQuestion, promptDelay);
+				},
+				name: "thanks",
+				nextQuestion: "share",
+				text: "Thanks for registering! See you in LA on January 27.",
+				userResponse: false
+			},
+			share: {
+				action: function() {
+					setTimeout(
+						function() {
+							window.open('https://loop.liferay.com/web/guest/home/-/loop/topics/_Hackday','_blank');
+						},
+						promptDelay
+					);
+				},
+				name: "share",
+				text: "Share on loop?",
+				userResponse: true
+			}
 		};
 
-//		setTimeout(function() {
-//			printText("Enter your.email@liferay.com to begin", "command");
-//		}, promptDelay);
-//
-//		setTimeout(function() {
-//			printText("ryan.schuhler@liferay.com", "response success");
-//		}, promptDelay * 2);
-//		setTimeout(function() {
-//			printText("Which office are you from?", "command");
-//		}, promptDelay * 3);
-//		setTimeout(function() {
-//			printText("Diamond Bar (US) ", "response");
-//		}, promptDelay * 4);
-//		setTimeout(function() {
-//			printText("Will you stay for pizza after 20:00?", "command");
-//		}, promptDelay * 5);
-//		setTimeout(function() {
-//			printText("yes", "response");
-//		}, promptDelay * 6);
-//		setTimeout(function() {
-//			printText("Hit 'enter' to submit!", "command");
-//		}, promptDelay * 7);
-//		setTimeout(function() {
-//			printText("Thanks for registering! See you in LA on January 27.", "response");
-//		}, promptDelay * 8);
-//		setTimeout(function() {
-//			printText("Share on loop?", "command");
-//		}, promptDelay * 9);
-//		setTimeout(function() {
-//			printText("yes", "response");
-//		}, promptDelay * 10);
+		var runQuestion = function(question) {
+			printText(question.text, 'command');
 
-		var data = 	WeDeploy.data('http://data.liferayhackday.wedeploy.io');
+			listenForUserInput(question);
+		};
+
+		var setCursorEnd = function() {
+			var range = document.createRange();
+
+			var sel = window.getSelection();
+
+			range.setStart(consoleContent.childNodes[consoleContent.childNodes.length - 1], 0);
+			range.collapse(true);
+
+			sel.removeAllRanges();
+			sel.addRange(range);
+		};
+
+		var unlistenForUserInput = function(question) {
+			consoleContent.removeEventListener('keydown', processUserKeydown);
+		};
 
 		var updateCount = function() {
 			data.get('hackers')
@@ -241,25 +398,13 @@
 			});
 		};
 
-		updateCount();
+		consoleContent.addEventListener('click', setCursorEnd);
 
-//		var form = document.querySelector('form');
-//
-//		form.addEventListener('submit', function(e) {
-//			e.preventDefault();
-//
-//			data.create('hackers', {
-//				"email": form.email.value
-//			})
-//			.then(function(hackers) {
-//				if (form.submitBtn) {
-//					form.email.value = "Thanks";
-//					form.removeChild(form.submitBtn);
-//
-//					updateCount();
-//				}
-//			});
-//		});
+		var curQuestion = questions['email'];
+
+		runQuestion(questions.email);
+
+		updateCount();
 	</script>
 </body>
 </html>
