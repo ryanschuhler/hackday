@@ -6,6 +6,12 @@
 		"parameters": {
 			"email": {
 				"type": "string"
+			},
+			"office": {
+				"type": "string"
+			},
+			"pizza": {
+				"type": "string"
 			}
 		}
 	}
