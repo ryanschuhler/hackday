@@ -133,7 +133,7 @@
 		</div>
 	</div>
 
-	<script src="http://cdn.wedeploy.com/api/1.0.0-alpha.7/wedeploy.js"></script>
+	<script src="http://cdn.wedeploy.com/api/latest/wedeploy.js"></script>
 	<script>
 //		Animate Scroll
 
@@ -231,7 +231,7 @@
 //		Console Functionality
 
 		var characterDelay = 50;
-		var data = 	WeDeploy.url('http://data.liferayhackday.wedeploy.io/hackers');
+		var data = WeDeploy.data('http://data.liferayhackday.wedeploy.io');
 		var promptDelay = 500;
 		var userInput = '';
 		var userAnswers = {};
@@ -476,12 +476,10 @@
 		var updateCount = function() {
 			data.get('hackers')
 			.then(function(hackers) {
-				if (hackers.statusCode_ == 200) {
-					document.getElementById("hackerCount").innerText= hackers.body_.length;
-				}
-				else {
-					document.getElementById("hackerCountWrapper").style.display = 'none';
-				}
+				document.getElementById("hackerCount").innerText= hackers.length;
+			})
+			.catch(function(reason) {
+				document.getElementById("hackerCountWrapper").style.display = 'none';
 			});
 		};
 
