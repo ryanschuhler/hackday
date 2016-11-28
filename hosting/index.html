@@ -306,14 +306,12 @@
 		};
 
 		var submit = function() {
-			data.put('hackers', userAnswers)
+			data.create('hackers', userAnswers)
 			.then(function(hackers) {
-				if (hackers.statusCode_ == 200) {
-					proceedQuestion(curQuestion, promptDelay);
-				}
-				else {
-					printText('Sorry, there was a problem with your submission, either refresh and try again or contact zeno.rocha@liferay.com if the problem persists.', 'error');
-				}
+				proceedQuestion(curQuestion, promptDelay);
+			})
+			.catch(function(reason) {
+				printText('Sorry, there was a problem with your submission, either refresh and try again or contact zeno.rocha@liferay.com if the problem persists.', 'error');
 			});
 		};
 
