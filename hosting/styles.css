@@ -7,6 +7,15 @@ body {
 	color: #FFF;
 	font-family: 'Source Code Pro', "Lucida Console", Monaco, monospace;
 	font-size: 20px;
+	text-rendering: optimizeLegibility;
+	-moz-osx-font-smoothing: grayscale;
+	-webkit-font-smoothing: antialiased;
+	font-smoothing: antialiased;
+	-ms-text-size-adjust: 100%;
+	-webkit-text-size-adjust: 100%;
+	text-size-adjust: 100%;
+	letter-spacing: -0.02rem; 
+	margin: 0;
 }
 
 button, textarea {
@@ -204,27 +213,91 @@ td {
 	text-align: center;
 }
 
-@media (max-width: 800px) {
+@media screen and (max-width: 800px), screen and (max-device-width: 600px) {
+
+	body {
+	}
+
 	table {
 		margin: 0 auto;
+	}
+
+	h2 {
+		font-size: 2em;
+		-webkit-margin-before: 0;
+	}
+
+	img {
+		max-width: 280px;
+	}
+
+	#banner {
+		background: #2A2B39 url('./assets/images/bg-image-400.jpg') no-repeat center/cover;
+		height: initial;
+		padding: 2em 0 4em;
 	}
 
 	#footer .copyright, #footer .footer-logo, #footer .powered-by {
 		margin: 1em;
 	}
 
+	#footer {
+		display: flex;
+		flex-wrap: wrap;
+		font-size: 70%;
+	}
+
+	#console {
+		margin: 1em;
+		max-width: none;
+		width: initial;
+	}
+
+	#about h2 {
+		min-width: 300px;
+		overflow-x: hidden;
+	}
+	#bio-zeno {
+		order: 2;
+	}
+
+	#pic-zeno {
+		order: 1;
+	}
+
+	#bio-josh {
+		order: 4;
+	}
+
+	#pic-josh {
+		margin-top: 2em;
+		order: 3;
+	}
+
 	.flex {
-		display: block;
-		text-align: center;
+		flex-wrap: wrap;
 	}
 
 	.giant-text {
-		display: none;
+		font-size: 16vh;
+		text-align: center;
+		width: 100%;
+		left: 0;
+		mix-blend-mode: multiply;
+		margin: .25em 0;
 	}
 
 	.offset {
 		margin: 1em;
 		width: auto;
+	}
+
+	.padding-horizontal-large {
+		padding: 0 1vw;
+	}
+
+	.section {
+		padding: 8vh 1em 12vh;
 	}
 }
 
