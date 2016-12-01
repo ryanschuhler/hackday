@@ -131,6 +131,46 @@ td {
 	z-index: 1;
 }
 
+#signUp.fixed .sign-up-info {
+	left: 0;
+	position: fixed;
+	top: 0;
+}
+
+#signUp.fixed .sign-up-info svg {
+	margin-left: 1em;
+	width: 3em;
+}
+
+#signUp.fixed .sign-up-info h2 {
+	font-size: 1em;
+	transform: rotate(-90deg);
+	position: absolute;
+	white-space: nowrap;
+	left: -102px;
+	top: 215px;
+}
+
+#signUp.fixed .sign-up-action {
+	position: fixed;
+	right: 1em;
+	top: 0;
+	width: 3em;
+}
+
+#signUp.fixed .sign-up-action #console {
+	box-sizing: border-box;
+	width: 100%;
+}
+
+#signUp.fixed .sign-up-action #hackerCountWrapper {
+	position: absolute;
+	transform: rotate(90deg);
+	left: -120px;
+	top: 270px;
+	white-space: nowrap;
+}
+
 .flex {
 	display: flex;
 }

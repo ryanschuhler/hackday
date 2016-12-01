@@ -213,8 +213,8 @@
 			var formPosY = consoleContent.offsetTop + 30;
 
 			var distance = Math.sqrt(
-					Math.pow(posX - formPosX, 2) +
-					Math.pow(posY - formPosY, 2)
+				Math.pow(posX - formPosX, 2) +
+				Math.pow(posY - formPosY, 2)
 			);
 
 			//var hShadow = 1 + (distance/10) *still need to figure out the hshadow
@@ -358,9 +358,8 @@
 				action: save,
 				error: "Please use a valid Liferay email",
 				name: "email",
-				nextQuestion: "office",
-				text: "Enter your.email​@liferay.com to begin",
-				userResponse: true,
+				nextQuestion: "tshirt",
+				text: "Enter your.email@liferay.com to begin",
 				validate: function() {
 					if (userAnswers[curQuestion.name].indexOf('@liferay.com') != -1) {
 						return true;
@@ -375,7 +374,6 @@
 				name: "office",
 				nextQuestion: "pizza",
 				text: "Which office are you from?",
-				userResponse: true,
 				validate: function() {
 					if (officeOptions.indexOf(userAnswers[curQuestion.name].toLowerCase()) >= 0) {
 						return true;
@@ -390,7 +388,6 @@
 				name: "pizza",
 				nextQuestion: "submit",
 				text: "Will you stay for pizza after 20:00? (y/n)",
-				userResponse: true,
 				validate: function() {
 					if (['yes', 'no', 'y', 'n'].indexOf(userAnswers[curQuestion.name].toLowerCase()) >= 0) {
 						return true;
@@ -413,6 +410,20 @@
 				text: "Thanks for registering! See you in LA on January 27.",
 				userResponse: false
 			},
+			tshirt: {
+				action: save,
+				error: "Please enter a valid tshirt size (s,m,l,xl,xxl)",
+				name: "tshirt",
+				nextQuestion: "submit",
+				text: "What size t-shirt would you like? (s,m,l,xl,xxl)",
+				validate: function() {
+					if (['s', 'm', 'l', 'xl', 'xxl'].indexOf(userAnswers[curQuestion.name].toLowerCase()) >= 0) {
+						return true;
+					}
+
+					return false;
+				}
+			},
 			share: {
 				action: function() {
 					save();
@@ -431,7 +442,6 @@
 				name: "share",
 				text: "Share on loop? (y/n)",
 				error: "Please answer yes or no",
-				userResponse: true,
 				validate: function() {
 					if (['yes', 'no', 'y', 'n'].indexOf(userAnswers[curQuestion.name].toLowerCase()) >= 0) {
 						return true;
