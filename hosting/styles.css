@@ -236,8 +236,12 @@ td {
 .more-info {
 	bottom: 1em;
 	color: #FFF;
+	cursor: pointer;
+	left: 0;
 	position: absolute;
+	text-align: center;
 	text-decoration: none;
+	width: 100%;
 	z-index: 1;
 }
 
