@@ -14,7 +14,7 @@ body {
 	-ms-text-size-adjust: 100%;
 	-webkit-text-size-adjust: 100%;
 	text-size-adjust: 100%;
-	letter-spacing: -0.02rem; 
+	letter-spacing: -0.02rem;
 	margin: 0;
 }
 
@@ -82,7 +82,7 @@ td {
 	max-width: 24em;
 	min-height: 1em;
 	overflow: hidden;
-	padding: 1em .2em 1em 2.5em;
+	padding: 1em .2em 2em 2.5em;
 	position: relative;
 	text-align: left;
 	width: 24em;
@@ -115,6 +115,17 @@ td {
 
 #console .success {
 	color: #27AE60;
+}
+
+#consoleInput {
+	background: none;
+	border: none;
+	color: #FFF;
+	display: block;
+	font-family: 'Source Code Pro', "Lucida Console", Monaco, monospace;
+	font-size: 1em;
+	outline: none;
+	width: 100%;
 }
 
 #details {
@@ -272,6 +283,7 @@ td {
 	}
 
 	img {
+		margin: 0 auto;
 		max-width: 280px;
 	}
 

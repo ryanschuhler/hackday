@@ -23,8 +23,8 @@
 				<div class="sign-up-action">
 					<div id="console">
 						<div class="prompt">>_</div>
-
-						<div class="content" contenteditable="true" id="consoleContent"></div>
+						<div class="content" id="consoleContent"></div>
+						<input id="consoleInput" />
 					</div>
 
 					<div id="hackerCountWrapper">
@@ -202,6 +202,7 @@
 //		Text Shadow Effect
 
 		var consoleContent = document.getElementById("consoleContent");
+		var consoleInput = document.getElementById("consoleInput");
 		var textShadow = document.getElementById("textShadow");
 
 		var findMouse = function(e) {
@@ -246,7 +247,7 @@
 
 		var listenForUserInput = function(question) {
 			if (question.validate) {
-				consoleContent.addEventListener('keydown', processUserKeydown);
+				consoleInput.addEventListener('keydown', processUserKeydown);
 			}
 			else {
 				var delay = curQuestion.text.length * characterDelay + 1000;
@@ -270,8 +271,6 @@
 			}
 
 			if (text.length -1 == count) {
-				var node = document.createElement("br");
-
 				consoleContent.appendChild(node);
 
 				consoleContent.scrollTop = consoleContent.scrollHeight;
@@ -280,28 +279,35 @@
 			}
 		};
 
-		var printText = function(text, className) {
+		var printText = function(text, className, animate) {
 			var node = document.createElement("div");
 
 			node.className = className;
 
 			node = consoleContent.appendChild(node);
 
-			hideCursor();
-			printCharacter(node, text, 0)
+			if (animate) {
+				printCharacter(node, text, 0)
+			}
+			else {
+				node.innerHTML += text;
+			}
 		};
 
-
 		var save = function() {
+			printText(consoleInput.value, '');
 			userAnswers[curQuestion.name] = userInput;
 
+			consoleInput.value = '';
 			userInput = '';
+
+			consoleContent.scrollTop = consoleContent.scrollHeight;
 
 			if (curQuestion.validate()) {
 				proceedQuestion(curQuestion, promptDelay);
 			}
 			else {
-				printText(curQuestion.error, 'error');
+				printText(curQuestion.error, 'error', true);
 
 				listenForUserInput(curQuestion);
 			}
@@ -313,17 +319,9 @@
 				proceedQuestion(curQuestion, promptDelay);
 			})
 			.catch(function(reason) {
-				printText('Sorry, there was a problem with your submission, either refresh and try again or contact ryan.schuhler@liferay.com if the problem persists.', 'error');
+				printText('Sorry, there was a problem with your submission, either refresh and try again or contact ryan.schuhler@liferay.com if the problem persists.', 'error', true);
 			});
 		};
-
-		var officeOptions = [
-			'diamond bar',
-			'hungary',
-			'madrid',
-			'recife',
-			'other'
-		];
 
 		var processUserKeydown = function(event) {
 			if (event.key.length == 1) {
@@ -334,6 +332,7 @@
 			}
 			else if (event.key == 'Enter') {
 				unlistenForUserInput(curQuestion);
+				userInput = consoleInput.value;
 
 				curQuestion.action();
 			}
@@ -363,34 +362,6 @@
 				text: "Enter your.email@liferay.com to begin",
 				validate: function() {
 					if (userAnswers[curQuestion.name].indexOf('@liferay.com') != -1) {
-						return true;
-					}
-
-					return false;
-				}
-			},
-			office: {
-				action: save,
-				error: "Please use a valid Liferay office. The options are " + officeOptions.join(', '),
-				name: "office",
-				nextQuestion: "pizza",
-				text: "Which office are you from?",
-				validate: function() {
-					if (officeOptions.indexOf(userAnswers[curQuestion.name].toLowerCase()) >= 0) {
-						return true;
-					}
-
-					return false;
-				}
-			},
-			pizza: {
-				action: save,
-				error: "Please answer yes or no",
-				name: "pizza",
-				nextQuestion: "submit",
-				text: "Will you stay for pizza after 20:00? (y/n)",
-				validate: function() {
-					if (['yes', 'no', 'y', 'n'].indexOf(userAnswers[curQuestion.name].toLowerCase()) >= 0) {
 						return true;
 					}
 
@@ -454,21 +425,14 @@
 		};
 
 		var runQuestion = function(question) {
-			printText(question.text, 'command');
+			printText(question.text, 'command', true);
 
 			listenForUserInput(question);
+			setCursorEnd();
 		};
 
 		var setCursorEnd = function() {
-			var range = document.createRange();
-
-			var sel = window.getSelection();
-
-			range.setStart(consoleContent.childNodes[consoleContent.childNodes.length - 1], 0);
-			range.collapse(true);
-
-			sel.removeAllRanges();
-			sel.addRange(range);
+			consoleInput.focus()
 		};
 
 		var unlistenForUserInput = function(question) {
